@@ -1,4 +1,4 @@
-import { validateToken } from "../utils/generateTokens";
+import { validateToken } from "../utils/generateTokens.js";
 
 export const verifyToken = (cookieName = "token") => {
   return (req, res, next) => {
@@ -13,18 +13,19 @@ export const verifyToken = (cookieName = "token") => {
     try {
       const userPayload = validateToken(tokenCookieValue);
 
-      if (!userPayload || !userPayload.userId) {
+      
+      if (!userPayload || !userPayload.id) {
         return res.status(401).json({ err: "Error validating token" });
       }
 
-      req.user = userPayload;
+      // Attach user ID to request for use in controllers
+      req.user = { userId: userPayload.id };
 
       console.log("User Payload in middleware, ..", req.user);
       next();
     } catch (error) {
-        console.log("Error in middleware while checking token!", error);
-        return res.status(401).json({ error: "Invalid token" });
+      console.log("Error in middleware while checking token!", error);
+      return res.status(401).json({ error: "Invalid token" });
     }
   };
 };
-

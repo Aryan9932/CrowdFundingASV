@@ -1,13 +1,24 @@
-import mongoose from 'mongoose';
+import pkg from "pg";
+const { Pool } = pkg;
+import dotenv from "dotenv";
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected');
-  } catch (error) {
-    console.error(error.message);
-    process.exit(1);
-  }
-};
+dotenv.config();
 
-export default connectDB;
+// Create PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Required for NeonDB
+  },
+});
+
+// Test connection
+pool.on("connect", () => {
+  console.log("✅ PostgreSQL connected (NeonDB)");
+});
+
+pool.on("error", (err) => {
+  console.error("❌ PostgreSQL connection error:", err.message);
+});
+
+export default pool;
