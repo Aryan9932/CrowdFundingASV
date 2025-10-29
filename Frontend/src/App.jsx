@@ -12,6 +12,8 @@ import CampaignDetail from './pages/CampaignDetail';
 import CreateCampaign from './pages/CreateCampaign';
 import BecomeCreator from './pages/BecomeCreator';
 import FundingGuide from './pages/FundingGuide';
+import Profile from './pages/Profile';
+import MyCampaigns from './pages/MyCampaigns';
 // import PaymentSuccess from './pages/PaymentSuccess'; // Disabled for now
 // import PaymentFailure from './pages/PaymentFailure'; // Disabled for now
 
@@ -53,6 +55,8 @@ function App() {
               <Route path="/campaigns/create" element={<CreateCampaign />} />
               <Route path="/become-creator" element={<BecomeCreator />} />
               <Route path="/funding-guide" element={<FundingGuide />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/my-campaigns" element={<MyCampaigns />} />
               {/* Payment routes disabled for now */}
               {/* <Route path="/payment/success" element={<PaymentSuccess />} /> */}
               {/* <Route path="/payment/failure" element={<PaymentFailure />} /> */}

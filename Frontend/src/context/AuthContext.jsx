@@ -93,12 +93,39 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUser = async (userData) => {
+    try {
+      const data = await authAPI.updateProfile(userData);
+      
+      // Update user in state and localStorage
+      const updatedUser = {
+        ...user,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        bio: data.user.bio,
+        location: data.user.location,
+        profilePicUrl: data.user.profilePicUrl,
+      };
+      
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      
+      return { success: true, message: data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Update failed',
+      };
+    }
+  };
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    updateUser,
     isAuthenticated: !!user,
   };
 

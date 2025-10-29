@@ -69,3 +69,5 @@ GROUP BY c.id, c.title, c.goal_amount, c.raised_amount;
 -- Success message
 SELECT 'Payment tables created successfully!' as message;
 
+
+

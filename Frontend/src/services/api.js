@@ -56,6 +56,16 @@ export const authAPI = {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   },
+
+  getProfile: async () => {
+    const response = await api.get('/auth/profile');
+    return response.data;
+  },
+
+  updateProfile: async (userData) => {
+    const response = await api.put('/auth/profile', userData);
+    return response.data;
+  },
 };
 
 // ==================== CAMPAIGN API ====================
@@ -88,6 +98,12 @@ export const campaignAPI = {
   // Get trending campaigns
   getTrendingCampaigns: async (limit = 6) => {
     const response = await api.get('/campaigns/trending', { params: { limit } });
+    return response.data;
+  },
+
+  // Get current user's campaigns
+  getMyCampaigns: async () => {
+    const response = await api.get('/campaigns/my-campaigns');
     return response.data;
   },
 

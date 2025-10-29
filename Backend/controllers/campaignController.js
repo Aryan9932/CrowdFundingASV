@@ -118,7 +118,9 @@ export const getCampaigns = async (req, res) => {
       sortOrder,
     };
 
+    console.log("🔍 Fetching campaigns with filters:", filters);
     const campaigns = await Campaign.fetchAllCampaigns(filters);
+    console.log(`✅ Found ${campaigns.length} campaigns`);
 
     res.json({
       success: true,
@@ -404,6 +406,32 @@ export const addInvestment = async (req, res) => {
     });
   } catch (err) {
     console.error("Error adding investment:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// Get current user's campaigns
+export const getMyCampaigns = async (req, res) => {
+  try {
+    const userId = req.user.userId; // From verifyToken middleware
+    
+    const filters = {
+      creatorId: userId,
+      page: req.query.page || 1,
+      limit: req.query.limit || 50,
+      sortBy: req.query.sortBy || "created_at",
+      sortOrder: req.query.sortOrder || "DESC",
+    };
+
+    const result = await Campaign.fetchCampaigns(filters);
+    
+    res.status(200).json({
+      success: true,
+      campaigns: result.campaigns,
+      pagination: result.pagination,
+    });
+  } catch (err) {
+    console.error("Error fetching user campaigns:", err);
     res.status(500).json({ success: false, error: err.message });
   }
 };

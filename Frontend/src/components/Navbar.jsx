@@ -19,6 +19,7 @@ const Navbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
@@ -36,6 +37,21 @@ const Navbar = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.profile-dropdown') && !event.target.closest('.profile-button')) {
+        setProfileMenuOpen(false);
+      }
+      if (!event.target.closest('.notifications-dropdown') && !event.target.closest('.notifications-button')) {
+        setNotificationsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleLogout = () => {
@@ -107,10 +123,68 @@ const Navbar = () => {
             {isAuthenticated ? (
               <>
                 {/* Notifications */}
-                <button className="relative p-2 text-gray-600 hover:text-primary-600 hover:bg-gray-100 rounded-full transition-all duration-200">
-                  <BellIcon className="h-6 w-6" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                </button>
+                <div className="relative">
+                  <button 
+                    onClick={() => setNotificationsOpen(!notificationsOpen)}
+                    className="notifications-button relative p-2 text-gray-600 hover:text-primary-600 hover:bg-gray-100 rounded-full transition-all duration-200"
+                  >
+                    <BellIcon className="h-6 w-6" />
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                  </button>
+                  
+                  {notificationsOpen && (
+                    <div className="notifications-dropdown absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-slideDown max-h-96 overflow-y-auto">
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <h3 className="text-lg font-bold text-gray-900">Notifications</h3>
+                      </div>
+                      
+                      {/* Sample notifications - you can replace with real data later */}
+                      <div className="divide-y divide-gray-100">
+                        <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-primary-600 rounded-full mt-2"></div>
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-900 font-medium">New campaign launched</p>
+                              <p className="text-xs text-gray-500 mt-1">Someone you follow started a new project</p>
+                              <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-700">Campaign milestone reached</p>
+                              <p className="text-xs text-gray-500 mt-1">"Save the Ocean" reached 50% of goal</p>
+                              <p className="text-xs text-gray-400 mt-1">1 day ago</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-700">New comment on your campaign</p>
+                              <p className="text-xs text-gray-500 mt-1">John left a comment on your project</p>
+                              <p className="text-xs text-gray-400 mt-1">3 days ago</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="px-4 py-3 border-t border-gray-100">
+                        <button 
+                          onClick={() => setNotificationsOpen(false)}
+                          className="w-full text-center text-sm text-primary-600 hover:text-primary-700 font-semibold"
+                        >
+                          View All Notifications
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Start Campaign Button with Gradient */}
                 <Link 
@@ -126,7 +200,7 @@ const Navbar = () => {
                 <div className="relative">
                   <button 
                     onClick={() => setProfileMenuOpen(!profileMenuOpen)} 
-                    className="flex items-center space-x-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200"
+                    className="profile-button flex items-center space-x-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200"
                   >
                     <div className="w-9 h-9 bg-gradient-to-br from-primary-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">
                       {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
@@ -134,7 +208,7 @@ const Navbar = () => {
                     <span className="font-medium max-w-[100px] truncate">{user?.firstName || user?.email}</span>
                   </button>
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-slideDown">
+                    <div className="profile-dropdown absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-slideDown">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="text-sm font-semibold text-gray-900">{user?.firstName || 'User'}</p>
                         <p className="text-xs text-gray-500 truncate">{user?.email}</p>

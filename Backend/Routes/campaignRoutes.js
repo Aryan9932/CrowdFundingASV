@@ -6,6 +6,7 @@ import {
   getCampaignsByCategory,
   getCampaignsByType,
   getTrendingCampaigns,
+  getMyCampaigns,
   updateCampaign,
   deleteCampaign,
   toggleLike,
@@ -49,6 +50,9 @@ router.get("/:id/comments", getComments);
 // ============================================
 // Protected Routes (Authentication Required)
 // ============================================
+
+// Get current user's campaigns
+router.get("/my-campaigns", verifyToken(), getMyCampaigns);
 
 // Create a new campaign with file uploads
 // Requires: images (up to 5), video (up to 1)
